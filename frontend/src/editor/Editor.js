@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from 'styled-components';
 import AceEditor from "react-ace";
 import shortid from "shortid";
+import { useParams, useHistory } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
 import "./Editor.css";
-import { useParams, useHistory } from "react-router-dom";
+import { sample } from './sample.js';
 
 function useID() {
   const { id } = useParams();
@@ -23,14 +24,23 @@ function useID() {
 
 function Editor() {
   const id = useID();
-  const [jsCode, setJSCode] = useState("console.log('whew')");
+  const [jsCode, setJSCode] = useState(sample);
+  const iframe = useRef(null);
+  const script = useRef(null);
 
   console.log(id)
 
+  const runScript = () => {
+    // script.current.dangerouslySetInnerHTML
+    // script.
+    console.log(iframe.current)
+    console.log(iframe.src)
+  }
+
   return (
-    <>
+    <Wrapper>
       <h3>make some cool ass art</h3>
-      <Wrapper>
+      <Flex>
         <div>
           <StyledEditor
             mode="javascript"
@@ -40,6 +50,8 @@ function Editor() {
             value={jsCode}
             fontSize={14}
             showPrintMargin={true}
+            width="35vw"
+            height="60vh"
             showGutter={true}
             highlightActiveLine={true}
             setOptions={{
@@ -52,13 +64,18 @@ function Editor() {
             }}
           />
           <ButtonContainer>
-            <button className="success">Run</button>
+            <button className="success" onClick={runScript}>Run</button>
             <button className="warning">Save</button>
           </ButtonContainer>
         </div>
-        <StyledIFrame sandbox="allow-scripts"></StyledIFrame>
-      </Wrapper>
-    </>
+        <StyledIFrame
+          sandbox="allow-scripts allow-same-origin allow-pointer-lock"
+          ref={iframe}
+          src={process.env.PUBLIC_URL + '/sandbox.html'}
+        >
+        </StyledIFrame>
+      </Flex>
+    </Wrapper>
   );
 }
 
@@ -68,19 +85,25 @@ const StyledEditor = styled(AceEditor)`
   border-style: solid;
   border-width: 1px;
   border-color: black;
-  width: 500px;
-  height: 500px;
 `;
 
 const StyledIFrame = styled.iframe`
-  width: 500px;
-  height: 500px;
+  width: 35vw;
+  height: 60vh;
 `;
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+`;
+
+const Flex = styled.div`
+  display: flex;
   flex-direction: row;
-  padding: 0 100px;
+  width: 100%;
+  justify-content: center;
 `;
 
 const ButtonContainer = styled.div`
