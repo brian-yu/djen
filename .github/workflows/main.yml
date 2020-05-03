@@ -54,6 +54,7 @@ jobs:
         # This client-secret.json is converted by GCP_SA_KEY.
         gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
         gcloud config set project ${{ secrets.PROJECT_ID }}
+        sudo apt-get install google-cloud-sdk-app-engine-go
         gcloud -q app deploy backend/app.yaml --promote
     
     - name: Publish dispatch settings to Google App Engine
