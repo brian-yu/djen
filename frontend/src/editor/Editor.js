@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
 import AceEditor from "react-ace";
 import shortid from "shortid";
@@ -6,12 +6,26 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
 import "./Editor.css";
+import { useParams, useHistory } from "react-router-dom";
+
+function useID() {
+  const { id } = useParams();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (id) {
+      return;
+    }
+    history.push(`/create/${shortid.generate()}`);
+  });
+  return id;
+}
 
 function Editor() {
-  const [id, setID] = useState(null);
+  const id = useID();
   const [jsCode, setJSCode] = useState("console.log('whew')");
 
-  console.log(shortid.generate())
+  console.log(id)
 
   return (
     <>
@@ -37,7 +51,10 @@ function Editor() {
               tabSize: 2,
             }}
           />
-          <button class="success">Run</button>
+          <ButtonContainer>
+            <button className="success">Run</button>
+            <button className="warning">Save</button>
+          </ButtonContainer>
         </div>
         <StyledIFrame sandbox="allow-scripts"></StyledIFrame>
       </Wrapper>
@@ -64,4 +81,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 0 100px;
-`
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;

@@ -15,7 +15,6 @@ import Editor from './editor/Editor.js';
 function App() {
   return (
     <div className="App">
-      {/* <Editor /> */}
       <Router>
       <div>
         <nav>
@@ -35,7 +34,7 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/create">
+          <Route path="/create/:id?">
             <Editor />
           </Route>
           <Route path="/about">
