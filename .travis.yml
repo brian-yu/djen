@@ -1,8 +1,0 @@
-before_deploy:
-- cd graphql
-deploy:
-  provider: gae
-  keyfile: ../djen-backend-ff74065a257b.json
-  project: djen-backend
-  version: graphql
-  on: master

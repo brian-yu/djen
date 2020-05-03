@@ -1,0 +1,6 @@
+dispatch:
+  - url: "api.djen.xyz/*"
+    service: default
+
+  - url: "graphql.djen.xyz/*"
+    service: graphql

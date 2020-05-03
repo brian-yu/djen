@@ -42,9 +42,23 @@ jobs:
         gae_variables: ${{ secrets.GAE_VARIABLES }}
         gae_config_path: ./graphql/app.yaml
 
-    - name: Publish app to Google App Engine
+    - name: Publish graphql app to Google App Engine
       run: |
         # This client-secret.json is converted by GCP_SA_KEY.
         gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
         gcloud config set project ${{ secrets.PROJECT_ID }}
         gcloud -q app deploy graphql/app.yaml --promote
+    
+    - name: Publish backend app to Google App Engine
+    run: |
+      # This client-secret.json is converted by GCP_SA_KEY.
+      gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
+      gcloud config set project ${{ secrets.PROJECT_ID }}
+      gcloud -q app deploy backend/app.yaml --promote
+    
+    - name: Publish dispatch settings to Google App Engine
+    run: |
+      # This client-secret.json is converted by GCP_SA_KEY.
+      gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
+      gcloud config set project ${{ secrets.PROJECT_ID }}
+      gcloud -q app deploy dispatch.yaml
