@@ -31,11 +31,32 @@ module.exports.createStore = () => {
     },
     createdAt: SQL.DATE,
     updatedAt: SQL.DATE,
+    html: SQL.STRING,
+    css: SQL.STRING,
+    js: SQL.STRING,
+    user_id: {
+      type: DB.INTEGER,
+      references: {
+        model: users,
+      }
+    },
+    flagged: SQL.BOOLEAN,
+  });
+
+  const comments = db.define("comment", {
+    id: {
+      type: SQL.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    createdAt: SQL.DATE,
+    updatedAt: SQL.DATE,
     launchId: SQL.INTEGER,
     html: SQL.STRING,
     css: SQL.STRING,
     js: SQL.STRING,
     userId: SQL.INTEGER,
+    flagged: SQL.BOOLEAN,
   });
 
   return { users, submissions };
