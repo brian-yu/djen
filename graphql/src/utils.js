@@ -35,7 +35,7 @@ module.exports.createStore = () => {
     css: SQL.STRING,
     js: SQL.STRING,
     user_id: {
-      type: DB.INTEGER,
+      type: SQL.INTEGER,
       references: {
         model: users,
       }
