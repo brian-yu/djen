@@ -1,4 +1,4 @@
-// [START gae_go111_app]
+// [START gae_go113_app]
 
 // Sample helloworld is an App Engine app.
 package main
@@ -45,4 +45,4 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // [END indexHandler]
-// [END gae_go111_app]
+// [END gae_go113_app]

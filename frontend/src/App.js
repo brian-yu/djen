@@ -5,7 +5,6 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import styled from 'styled-components';
 
 import './App.css';
 import './preface.min.css';
