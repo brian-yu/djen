@@ -1,9 +1,8 @@
 before_install:
 - openssl aes-256-cbc -K $encrypted_246c7f474d76_key -iv $encrypted_246c7f474d76_iv
   -in djen-backend-ff74065a257b.json.enc -out djen-backend-ff74065a257b.json -d
-
 before_deploy:
-    - cd graphql
+- cd graphql
 deploy:
   provider: gae
   keyfile: djen-backend-ff74065a257b.json
