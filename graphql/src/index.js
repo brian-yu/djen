@@ -1,5 +1,8 @@
 "use strict";
+// Load env vars.
+require('dotenv').config();
 const { ApolloServer, gql } = require("apollo-server");
+
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against

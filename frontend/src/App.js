@@ -10,6 +10,14 @@ import './App.css';
 import './preface.min.css';
 
 import Editor from './editor/Editor.js';
+import Callback from './auth/Callback.js';
+
+function githubOauthLink() {
+  if (process.env.NODE_ENV !== 'production') {
+    return "https://github.com/login/oauth/authorize?client_id=24972415ccb6750e9d2f";
+  }
+  return "https://github.com/login/oauth/authorize?client_id=c4331b3aa91bd50a453c";
+}
 
 function App() {
   return (
@@ -28,7 +36,7 @@ function App() {
               <Link to="/about">about</Link>
             </li>
             <li>
-              <Link to="/login">sign in</Link>
+              <a href={githubOauthLink()}>sign in</a>
             </li>
           </ul>
         </nav>
@@ -41,6 +49,9 @@ function App() {
           </Route>
           <Route path="/about">
             <p>come back later.</p>
+          </Route>
+          <Route path="/auth/callback">
+            <Callback />
           </Route>
           <Route path="/">
             <h1>djen</h1>
