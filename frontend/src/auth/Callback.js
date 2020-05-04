@@ -10,8 +10,12 @@ function Callback() {
   const code = useQuery().get("code");
   return (
     <>
-      <h3>auth callback</h3>
+      <h3>authenticating...</h3>
       <p>{code}</p>
+      <div className="spinner">
+        <div className="cube1"></div>
+        <div className="cube2"></div>
+      </div>
     </>
   );
 }

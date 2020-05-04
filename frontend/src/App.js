@@ -13,10 +13,9 @@ import Editor from './editor/Editor.js';
 import Callback from './auth/Callback.js';
 
 function githubOauthLink() {
-  if (process.env.NODE_ENV !== 'production') {
-    return "https://github.com/login/oauth/authorize?client_id=24972415ccb6750e9d2f";
-  }
-  return "https://github.com/login/oauth/authorize?client_id=c4331b3aa91bd50a453c";
+  const env = process.env.NODE_ENV;
+  const clientID = env !== 'production' ? "24972415ccb6750e9d2f" : "c4331b3aa91bd50a453c";
+  return `https://github.com/login/oauth/authorize?client_id=${clientID}`;
 }
 
 function App() {
@@ -40,6 +39,7 @@ function App() {
             </li>
           </ul>
         </nav>
+        <h3>djen</h3>
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -54,7 +54,7 @@ function App() {
             <Callback />
           </Route>
           <Route path="/">
-            <h1>djen</h1>
+            <h4>gallery</h4>
           </Route>
         </Switch>
       </div>

@@ -12,6 +12,7 @@
 # below:
 .git
 .gitignore
+.env
 
 # Binaries for programs and plugins
 *.exe

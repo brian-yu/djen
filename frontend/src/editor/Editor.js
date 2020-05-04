@@ -6,7 +6,6 @@ import { useParams, useHistory } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
-import "./Editor.css";
 import { sample } from './sample.js';
 
 function useID() {
@@ -39,7 +38,7 @@ function Editor() {
 
   return (
     <Wrapper>
-      <h3>make some cool ass art</h3>
+      <h4>make some cool ass art</h4>
       <Flex>
         <div>
           <StyledEditor
@@ -90,6 +89,9 @@ const StyledEditor = styled(AceEditor)`
 const StyledIFrame = styled.iframe`
   width: 35vw;
   height: 60vh;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
 `;
 
 const Wrapper = styled.div`
