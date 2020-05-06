@@ -5,5 +5,4 @@ psycopg2
 gunicorn
 python-decouple
 shortuuid
-dotenv
 django-cors-headers
