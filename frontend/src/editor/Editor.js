@@ -63,8 +63,7 @@ function Editor() {
             }}
           />
           <ButtonContainer>
-            <button className="success" onClick={runScript}>Run</button>
-            <button className="warning">Save</button>
+            <button className="success" onClick={runScript}>Run / Save</button>
           </ButtonContainer>
         </div>
         <StyledIFrame
