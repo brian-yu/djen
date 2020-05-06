@@ -70,7 +70,8 @@ function Editor() {
         <StyledIFrame
           sandbox="allow-scripts allow-same-origin allow-pointer-lock"
           ref={iframe}
-          src={process.env.PUBLIC_URL + '/sandbox.html'}
+          // src={process.env.PUBLIC_URL + '/sandbox.html'}
+          src="http://localhost:8000/submissions/JvD5dc66VUWgJHctMD9Heh/render/"
         >
         </StyledIFrame>
       </Flex>

@@ -5,16 +5,13 @@ const typeDefs = gql`
     type Submission {
         id: ID!
         author: User!
-        code: Code!
-        upvoters: [User]!
-        flagged: Boolean!
-        comments: [Comment]!
-    }
-
-    type Code {
         html: String
         js: String
         css: String
+        upvotes: Int
+        upvoters: [User]!
+        flagged: Boolean!
+        comments: [Comment]!
     }
 
     type Comment {
