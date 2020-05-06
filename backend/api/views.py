@@ -101,6 +101,7 @@ class UpvoteViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["POST"])
+@csrf_exempt
 def get_auth_token(request, format=None):
     try:
         oauth_code = request.data["code"]

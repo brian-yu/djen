@@ -1,52 +1,86 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from 'styled-components';
+import React, { useState, useRef, useContext } from "react";
+import styled from "styled-components";
 import AceEditor from "react-ace";
-import shortid from "shortid";
-import { useParams, useHistory } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
-import { sample } from './sample.js';
-
-function useID() {
-  const { id } = useParams();
-  const history = useHistory();
-
-  useEffect(() => {
-    if (id) {
-      return;
-    }
-    history.push(`/create/${shortid.generate()}`);
-  });
-  return id;
-}
+import AuthContext from "../auth/AuthContext";
+import { sample } from "./sample";
+import Viewer from "../viewer/Viewer";
 
 function Editor() {
-  const id = useID();
-  const [jsCode, setJSCode] = useState(sample);
-  const iframe = useRef(null);
-  const script = useRef(null);
 
-  console.log(id)
+  const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
+
+  const [auth, setAuth] = useContext(AuthContext);
+  const [tab, setTab] = useState(Tabs.JS);
+  const [jsCode, setJSCode] = useState(sample);
+  const [htmlCode, setHTMLCode] = useState("");
+  const [cssCode, setCSSCode] = useState("");
+  const iframe = useRef(null);
 
   const runScript = () => {
     // script.current.dangerouslySetInnerHTML
     // script.
-    console.log(iframe.current)
-    console.log(iframe.src)
-  }
+    console.log(iframe.current);
+    console.log(iframe.current.src);
+  };
+
+  const getCode = () => {
+    switch (tab) {
+      case Tabs.JS:
+        return jsCode;
+      case Tabs.HTML:
+        return htmlCode;
+      case Tabs.CSS:
+        return cssCode;
+    }
+  };
+
+  const setCode = (value) => {
+    switch (tab) {
+      case Tabs.JS:
+        setJSCode(value);
+        return;
+      case Tabs.HTML:
+        setHTMLCode(value);
+        return;
+      case Tabs.CSS:
+        setCSSCode(value);
+        return;
+    }
+  };
+
+  const selectTab = (value) => {
+    setTab(value);
+  };
+
+  const Tab = (props) => {
+    return (
+      <StyledTab
+        selected={tab === props.value}
+        onClick={() => selectTab(props.value)}
+      >
+        {props.children}
+      </StyledTab>
+    );
+  };
 
   return (
     <Wrapper>
-      <h4>make some cool ass art</h4>
+      <TabContainer>
+        <Tab value={Tabs.JS}>js</Tab>
+        <Tab value={Tabs.HTML}>html</Tab>
+        <Tab value={Tabs.CSS}>css</Tab>
+      </TabContainer>
       <Flex>
         <div>
           <StyledEditor
             mode="javascript"
             theme="github"
             name="blah2"
-            onChange={setJSCode}
-            value={jsCode}
+            onChange={setCode}
+            value={getCode()}
             fontSize={14}
             showPrintMargin={true}
             width="35vw"
@@ -63,16 +97,17 @@ function Editor() {
             }}
           />
           <ButtonContainer>
-            <button className="success" onClick={runScript}>Run / Save</button>
+            <button className="success" onClick={runScript}>
+              Run / Save
+            </button>
           </ButtonContainer>
         </div>
-        <StyledIFrame
-          sandbox="allow-scripts allow-same-origin allow-pointer-lock"
+        <Viewer
+          width="35vw"
+          height="60vh"
+          // src="http://localhost:8000/submissions/JvD5dc66VUWgJHctMD9Heh/render/"
           ref={iframe}
-          // src={process.env.PUBLIC_URL + '/sandbox.html'}
-          src="http://localhost:8000/submissions/JvD5dc66VUWgJHctMD9Heh/render/"
-        >
-        </StyledIFrame>
+        ></Viewer>
       </Flex>
     </Wrapper>
   );
@@ -80,25 +115,14 @@ function Editor() {
 
 export default Editor;
 
+const Wrapper = styled.div`
+  width: 70vw;
+`;
+
 const StyledEditor = styled(AceEditor)`
   border-style: solid;
   border-width: 1px;
   border-color: black;
-`;
-
-const StyledIFrame = styled.iframe`
-  width: 35vw;
-  height: 60vh;
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
 `;
 
 const Flex = styled.div`
@@ -111,4 +135,27 @@ const Flex = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+`;
+
+const StyledTab = styled.div`
+  padding: 2px;
+  margin-bottom: 1px;
+  margin-right: 1px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+
+  background-color: ${(props) => (props.selected ? "#e4e4e5" : "inherit")};
+  transform: ${(props) => (props.selected ? "translateY(1px)" : "none")};
+  border-bottom-width: ${(props) => (props.selected ? "0px" : "1px")};
+
+  :hover {
+    transform: translateY(1px);
+    cursor: pointer;
+    border-bottom-width: 0px;
+  }
 `;
