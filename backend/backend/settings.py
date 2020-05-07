@@ -30,7 +30,7 @@ SECRET_KEY = config("API_SECRET", default="dev_secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api.djen.xyz', 'djen.xyz']
 
 
 # Application definition
