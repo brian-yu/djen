@@ -31,6 +31,8 @@ SECRET_KEY = config("API_SECRET", default="dev_secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+PRODUCTION = config("PRODUCTION", default=False, cast=bool)
+
 ALLOWED_HOSTS = ["api.djen.xyz", "djen.xyz"]
 if DEBUG:
     ALLOWED_HOSTS = []
@@ -139,10 +141,10 @@ CORS_ORIGIN_WHITELIST = [
     "https://djen.xyz",
     "https://api.djen.xyz",
 ]
-if DEBUG:
+if not PRODUCTION:
     CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
-if not DEBUG:
+if PRODUCTION:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
