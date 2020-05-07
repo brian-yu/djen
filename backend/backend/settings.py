@@ -13,8 +13,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config
 
-if os.path.exists('.env'):
+if os.path.exists(".env"):
     from dotenv import load_dotenv
+
     load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -30,7 +31,9 @@ SECRET_KEY = config("API_SECRET", default="dev_secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ['api.djen.xyz', 'djen.xyz']
+ALLOWED_HOSTS = ["api.djen.xyz", "djen.xyz"]
+if DEBUG:
+    ALLOWED_HOSTS = []
 
 
 # Application definition

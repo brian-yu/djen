@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useContext,
-  useReducer,
-  useEffect,
-} from "react";
+import React, { useRef, useContext, useReducer, useEffect } from "react";
 import styled from "styled-components";
 import AceEditor from "react-ace";
 import { useParams, useHistory } from "react-router-dom";
@@ -147,7 +142,13 @@ function Editor() {
         css: state[Tabs.CSS].code,
       }),
     })
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          console.error(resp);
+          throw new Error("Error!");
+        }
+        return resp.json();
+      })
       .then((data) => {
         console.log(data);
         if (method === "PUT") {
@@ -227,7 +228,6 @@ function Editor() {
         <Viewer
           width="35vw"
           height="60vh"
-          // src="http://localhost:8000/submissions/JvD5dc66VUWgJHctMD9Heh/render/"
           src={id ? `${API_HOST}/submissions/${id}/render/` : null}
           ref={iframe}
         ></Viewer>
