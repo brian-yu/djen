@@ -1,53 +1,24 @@
-export const sample = `// Sample from https://codepen.io/kulturdesign/pen/wKQNNX
-var objRotateX = 0;
-var objRotateY = 0;
-var objRotateZ = 0;
-
+export const sample = `
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  createCanvas(windowWidth, windowHeight, WEBGL); // Enable 3D drawing
 }
 
 function draw() {
-  background(230);
-  doAnimate();
-  objRotate();
-  drawModel();
+  background(25,23,22);
+  noFill();
+  stroke(192,87,70);
+  translate(0, 0, -100);
+  rotateZ(0.40578905); // Earth axial tilt = 23.25 degrees = 0.405 radians
+  rotateY(millis() / 10000);//rotate slowly 
+  sphere(300);
+
+  //make the circle sphere
+  push();
+  noFill();
+  // stroke(147,163,177); //grey blue
+  stroke(198,161,91);//yellow
+  rotateY(millis() / 5000);
+  sphere(30);
+  pop();
 }
-
-function drawModel() {
-  var spikeCount = 1000;
-  var spikeMaxLen = height/10;
-  var groupRadius = (height/2) - (height/10);
-  
-  for (var s=0; s < spikeCount; s++) {
-    
-    var noiseCoord = s;
-    var rnd = lerp(-1,1,noise(noiseCoord));
-
-    
-    // translate
-    rotateY(PI*rnd);
-    rotateZ(PI*rnd);
-    translate(groupRadius,0,0); 
-    
-    plane(rnd * spikeMaxLen,0.5);
-    
-    //reset translation
-    translate(-groupRadius,0,0);  
-    rotateY(-(PI*rnd));
-    rotateZ(-(PI*rnd));
-  }
-}
-
-function doAnimate() {
-  // increment animation variables
-  objRotateX -= 0.1;
-  objRotateY -= 0.1;
-  objRotateZ -= 0.1;
-}
-
-function objRotate() {
-  rotateX(radians(objRotateX));
-  rotateY(radians(objRotateY));
-  rotateZ(radians(objRotateZ));
-}`;
+`;
