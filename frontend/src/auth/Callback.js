@@ -24,7 +24,12 @@ function useAuth(code) {
       },
       body: JSON.stringify({ code }),
     })
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return resp.json()
+      })
       .then((auth) => {
         setAuth(auth);
         localStorage.setItem("auth", JSON.stringify(auth));
