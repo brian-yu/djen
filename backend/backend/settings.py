@@ -34,7 +34,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 PRODUCTION = config("PRODUCTION", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["api.djen.xyz", "djen.xyz"]
-if DEBUG:
+if not PRODUCTION and DEBUG:
     ALLOWED_HOSTS = []
 
 
