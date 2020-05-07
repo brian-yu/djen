@@ -83,6 +83,7 @@ function App() {
               </Route>
               <Route path="/">
                 <h4>gallery</h4>
+                <p>come back later.</p>
               </Route>
             </Switch>
           </div>

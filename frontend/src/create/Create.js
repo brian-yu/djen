@@ -1,30 +1,18 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import shortid from "shortid";
-import { useParams, useHistory } from "react-router-dom";
 
 import AuthContext from "../auth/AuthContext";
 import Editor from "../editor/Editor";
 
-// function useID() {
-//   const { id } = useParams();
-//   const history = useHistory();
-//   console.log(id);
-//   useEffect(() => {
-//     if (id) {
-//       return;
-//     }
-//     history.push(`/create/${shortid.generate()}`);
-//   });
-//   return id;
-// }
-
 function Create() {
-  // const id = useID();
 
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth, _] = useContext(AuthContext);
 
-  // console.log(id);
+  if (!auth) {
+    return (
+      <h4>please sign in</h4>
+    )
+  }
 
   return (
     <Wrapper>

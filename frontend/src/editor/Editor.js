@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useRef,
   useContext,
   useReducer,
@@ -19,6 +18,7 @@ import Viewer from "../viewer/Viewer";
 const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
 const initialState = {
   tab: Tabs.JS,
+  title: "untitled",
   [Tabs.JS]: {
     code: sample,
     cursor: { row: 0, col: 0 },
@@ -56,11 +56,18 @@ function reducer(state, action) {
         ...state,
         tab: action.value,
       };
+    case "setTitle":
+      return {
+        ...state,
+        title: action.value,
+      };
     case "initCode":
       return {
         ...state,
         ...action.value,
       };
+    case "reset":
+      return initialState;
     default:
       throw new Error();
   }
@@ -77,20 +84,18 @@ function useCursor(editor, state) {
 }
 
 function useInitialState(id, dispatch, setTitle) {
-  const history = useHistory();
   useEffect(() => {
     if (!id) {
+      dispatch({ type: "reset" });
       return;
     }
-
-    history.push(`/create/${id}`);
 
     fetch(`${API_HOST}/submissions/${id}/`, {
       method: "GET",
     })
       .then((resp) => resp.json())
       .then((data) => {
-        setTitle(data.title);
+        dispatch({ type: "setTitle", value: data.title });
         dispatch({
           type: "initCode",
           value: {
@@ -113,8 +118,8 @@ function useInitialState(id, dispatch, setTitle) {
 }
 
 function Editor() {
-  const [id, setId] = useState(useParams().id);
-  const [title, setTitle] = useState("untitled");
+  const history = useHistory();
+  const { id } = useParams();
   const [auth, _] = useContext(AuthContext);
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -122,7 +127,7 @@ function Editor() {
   const editor = useRef(null);
 
   useCursor(editor, state);
-  useInitialState(id, dispatch, setTitle);
+  useInitialState(id, dispatch);
 
   const runScript = () => {
     const method = !id ? "POST" : "PUT";
@@ -136,7 +141,7 @@ function Editor() {
         Authorization: `Token ${auth.token}`,
       },
       body: JSON.stringify({
-        title: title,
+        title: state.title,
         js: state[Tabs.JS].code,
         html: state[Tabs.HTML].code,
         css: state[Tabs.CSS].code,
@@ -145,9 +150,10 @@ function Editor() {
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
-        setId(data.id);
         if (method === "PUT") {
           iframe.current.src += "";
+        } else {
+          history.push(`/create/${data.id}`);
         }
       });
   };
@@ -176,7 +182,12 @@ function Editor() {
     <Wrapper>
       <TitleContainer>
         <Title>title:</Title>
-        <TitleInput value={title} onChange={(e) => setTitle(e.target.value)}></TitleInput>
+        <TitleInput
+          value={state.title}
+          onChange={(e) =>
+            dispatch({ type: "setTitle", value: e.target.value })
+          }
+        ></TitleInput>
       </TitleContainer>
       <TabContainer>
         <Tab value={Tabs.JS}>js</Tab>
