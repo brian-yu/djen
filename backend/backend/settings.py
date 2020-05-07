@@ -137,8 +137,10 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
     "https://djen.xyz",
-    "http://localhost:3000",
+    "https://api.djen.xyz",
 ]
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
 if not DEBUG:
     DATABASES = {
