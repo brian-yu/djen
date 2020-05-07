@@ -141,9 +141,9 @@ if not DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": config("DB_NAME"),
+            "NAME": config("DB_DATABASE"),
             "USER": config("DB_USER"),
-            "PASSWORD": config("DB_PASS"),
+            "PASSWORD": config("DB_PASSWORD"),
             "HOST": config("DB_HOST"),
         }
     }
