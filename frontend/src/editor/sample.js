@@ -1,4 +1,6 @@
 export const sample = `
+// Source: https://editor.p5js.org/sh5304@nyu.edu/sketches/S1twNBni7
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL); // Enable 3D drawing
 }
