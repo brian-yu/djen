@@ -1,66 +1,172 @@
-import React, { useState, useRef, useContext } from "react";
+import React, {
+  useState,
+  useRef,
+  useContext,
+  useReducer,
+  useEffect,
+} from "react";
 import styled from "styled-components";
 import AceEditor from "react-ace";
+import { useParams, useHistory } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
 import AuthContext from "../auth/AuthContext";
+import { API_HOST } from "../App";
 import { sample } from "./sample";
 import Viewer from "../viewer/Viewer";
 
+const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
+const initialState = {
+  tab: Tabs.JS,
+  [Tabs.JS]: {
+    code: sample,
+    cursor: { row: 0, col: 0 },
+  },
+  [Tabs.HTML]: {
+    code: "",
+    cursor: { row: 0, col: 0 },
+  },
+  [Tabs.CSS]: {
+    code: "",
+    cursor: { row: 0, col: 0 },
+  },
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case `setCode`:
+      return {
+        ...state,
+        [state.tab]: {
+          ...state[state.tab],
+          code: action.value,
+        },
+      };
+    case "setCursor":
+      return {
+        ...state,
+        [state.tab]: {
+          ...state[state.tab],
+          cursor: action.value,
+        },
+      };
+    case "setTab":
+      return {
+        ...state,
+        tab: action.value,
+      };
+    case "initCode":
+      return {
+        ...state,
+        ...action.value,
+      };
+    default:
+      throw new Error();
+  }
+}
+
+function useCursor(editor, state) {
+  useEffect(() => {
+    if (!editor || !editor.current) {
+      return;
+    }
+    const { row, column } = state[state.tab].cursor;
+    editor.current.editor.gotoLine(row + 1, column);
+  }, [state.tab]);
+}
+
+function useInitialState(id, dispatch, setTitle) {
+  const history = useHistory();
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    history.push(`/create/${id}`);
+
+    fetch(`${API_HOST}/submissions/${id}/`, {
+      method: "GET",
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setTitle(data.title);
+        dispatch({
+          type: "initCode",
+          value: {
+            [Tabs.JS]: {
+              ...initialState[Tabs.JS],
+              code: data.js,
+            },
+            [Tabs.HTML]: {
+              ...initialState[Tabs.HTML],
+              code: data.html,
+            },
+            [Tabs.CSS]: {
+              ...initialState[Tabs.CSS],
+              code: data.css,
+            },
+          },
+        });
+      });
+  }, [id]);
+}
+
 function Editor() {
+  const [id, setId] = useState(useParams().id);
+  const [title, setTitle] = useState("untitled");
+  const [auth, _] = useContext(AuthContext);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
-
-  const [auth, setAuth] = useContext(AuthContext);
-  const [tab, setTab] = useState(Tabs.JS);
-  const [jsCode, setJSCode] = useState(sample);
-  const [htmlCode, setHTMLCode] = useState("");
-  const [cssCode, setCSSCode] = useState("");
   const iframe = useRef(null);
+  const editor = useRef(null);
+
+  useCursor(editor, state);
+  useInitialState(id, dispatch, setTitle);
 
   const runScript = () => {
-    // script.current.dangerouslySetInnerHTML
-    // script.
-    console.log(iframe.current);
-    console.log(iframe.current.src);
-  };
-
-  const getCode = () => {
-    switch (tab) {
-      case Tabs.JS:
-        return jsCode;
-      case Tabs.HTML:
-        return htmlCode;
-      case Tabs.CSS:
-        return cssCode;
-    }
-  };
-
-  const setCode = (value) => {
-    switch (tab) {
-      case Tabs.JS:
-        setJSCode(value);
-        return;
-      case Tabs.HTML:
-        setHTMLCode(value);
-        return;
-      case Tabs.CSS:
-        setCSSCode(value);
-        return;
-    }
-  };
-
-  const selectTab = (value) => {
-    setTab(value);
+    const method = !id ? "POST" : "PUT";
+    const endpoint = !id
+      ? `${API_HOST}/submissions/`
+      : `${API_HOST}/submissions/${id}/`;
+    fetch(endpoint, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${auth.token}`,
+      },
+      body: JSON.stringify({
+        title: title,
+        js: state[Tabs.JS].code,
+        html: state[Tabs.HTML].code,
+        css: state[Tabs.CSS].code,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        setId(data.id);
+        if (method === "PUT") {
+          iframe.current.src += "";
+        }
+      });
   };
 
   const Tab = (props) => {
+    const click = () => {
+      // Record current tab cursor position.
+      if (editor && editor.current) {
+        dispatch({
+          type: "setCursor",
+          value: editor.current.editor.getCursorPosition(),
+        });
+      }
+      // Switch tabs.
+      dispatch({ type: "setTab", value: props.value });
+    };
+
     return (
-      <StyledTab
-        selected={tab === props.value}
-        onClick={() => selectTab(props.value)}
-      >
+      <StyledTab selected={state.tab === props.value} onClick={click}>
         {props.children}
       </StyledTab>
     );
@@ -68,6 +174,10 @@ function Editor() {
 
   return (
     <Wrapper>
+      <TitleContainer>
+        <Title>title:</Title>
+        <TitleInput value={title} onChange={(e) => setTitle(e.target.value)}></TitleInput>
+      </TitleContainer>
       <TabContainer>
         <Tab value={Tabs.JS}>js</Tab>
         <Tab value={Tabs.HTML}>html</Tab>
@@ -76,11 +186,12 @@ function Editor() {
       <Flex>
         <div>
           <StyledEditor
+            ref={editor}
             mode="javascript"
             theme="github"
             name="blah2"
-            onChange={setCode}
-            value={getCode()}
+            onChange={(code) => dispatch({ type: "setCode", value: code })}
+            value={state[state.tab].code}
             fontSize={14}
             showPrintMargin={true}
             width="35vw"
@@ -106,6 +217,7 @@ function Editor() {
           width="35vw"
           height="60vh"
           // src="http://localhost:8000/submissions/JvD5dc66VUWgJHctMD9Heh/render/"
+          src={id ? `${API_HOST}/submissions/${id}/render/` : null}
           ref={iframe}
         ></Viewer>
       </Flex>
@@ -158,4 +270,20 @@ const StyledTab = styled.div`
     cursor: pointer;
     border-bottom-width: 0px;
   }
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const TitleInput = styled.input`
+  font-size: 1em;
+  width: auto;
+  margin: 0;
+`;
+
+const Title = styled.h4`
+  margin: 0;
 `;

@@ -54,7 +54,7 @@ function App() {
             <nav>
               <ul>
                 <li>
-                  <Link to="/">home</Link>
+                  <Link to="/">gallery</Link>
                 </li>
                 <li>
                   <Link to="/create">create</Link>
