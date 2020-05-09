@@ -15,7 +15,7 @@ class SubmissionListSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "id",
             "title",
-            "user",
+            "username",
             "js",
             "html",
             "css",

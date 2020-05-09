@@ -1,12 +1,22 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Viewer = forwardRef((props, ref) => {
+
+  const [isVisible, setIsVisible] = useState(false);
+  useEffect(() => {
+    if (props.isVisible === undefined) {
+      setIsVisible(true);
+      return;
+    }
+    setIsVisible(props.isVisible);
+  }, [props.isVisible]);
+
   return (
     <StyledIFrame
       sandbox="allow-scripts allow-same-origin allow-pointer-lock"
       ref={ref}
-      src={props.src}
+      src={isVisible ? props.src : ""}
       width={props.width}
       height={props.height}
     ></StyledIFrame>

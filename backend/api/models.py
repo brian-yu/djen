@@ -91,6 +91,9 @@ class Submission(models.Model):
 
     def upvote_count(self):
         return self.upvote_set.count()
+    
+    def username(self):
+        return self.user.github_id
 
     def render(self):
         return f"""

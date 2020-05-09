@@ -8,6 +8,7 @@ import AuthContext from "./auth/AuthContext";
 import Callback from "./auth/Callback";
 import Create from "./create/Create";
 import Profile from "./profile/Profile";
+import Gallery from "./gallery/Gallery";
 
 export const API_HOST =
   process.env.NODE_ENV !== "production"
@@ -82,8 +83,7 @@ function App() {
                 <Profile />
               </Route>
               <Route path="/">
-                <h4>gallery</h4>
-                <p>come back later.</p>
+                <Gallery />
               </Route>
             </Switch>
           </div>
