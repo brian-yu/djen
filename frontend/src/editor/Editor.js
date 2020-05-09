@@ -293,7 +293,7 @@ function Editor({ readOnly = false }) {
           ref={iframe}
         ></Frame>
       </Flex>
-      <Like submission={state}></Like>
+      {readOnly ? null : <Like submission={state}></Like>}
     </Wrapper>
   );
 }
