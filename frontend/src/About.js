@@ -1,8 +1,9 @@
 import React from "react";
+import styled from "styled-components";
 
 const About = () => {
   return (
-    <>
+    <Wrapper>
       <p>djen is a community for generative art.</p>
       <p>
         it currently support <a href="https://p5js.org/">p5.js</a> and{" "}
@@ -20,7 +21,11 @@ const About = () => {
         made with <i class="fas fa-heart"></i> by{" "}
         <a href="https://brian.lol">brian</a>.
       </p>
-    </>
+    </Wrapper>
   );
 };
 export default About;
+
+const Wrapper = styled.div`
+margin: 40px;
+`;

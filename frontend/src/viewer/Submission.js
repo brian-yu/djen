@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useLayoutEffect } from "react";
 import styled from "styled-components";
 import TrackVisibility from "react-on-screen";
 
@@ -22,9 +22,36 @@ export function Like({ submission }) {
   );
 }
 
+export function useWindowSize() {
+  const [size, setSize] = useState(window.innerWidth - 200);
+  useLayoutEffect(() => {
+    function updateSize() {
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      if (width < 768) {
+        setSize(width - 100);
+      } else if (width < 992) {
+        setSize(Math.min(width - 200, height-200));
+      } else {
+        setSize(Math.min(800, height-200));
+      }
+      
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
+
 function Submission(props) {
   const [auth, setAuth] = useContext(AuthContext);
   const submission = props.submission;
+
+  const size = useWindowSize();
+
 
   return (
     <>
@@ -39,8 +66,8 @@ function Submission(props) {
       </p>
       <TrackVisibility partialVisibility>
         <Frame
-          width="35vw"
-          height="60vh"
+          width={`${size}px`}
+          height={`${size}px`}
           src={`${API_HOST}/submissions/${submission.id}/render/`}
           ref={submission.iframe}
         ></Frame>

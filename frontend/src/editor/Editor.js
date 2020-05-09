@@ -1,4 +1,11 @@
-import React, { useRef, useContext, useReducer, useEffect } from "react";
+import React, {
+  useRef,
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from "react";
 import styled from "styled-components";
 import AceEditor from "react-ace";
 import { useParams, useHistory, Link } from "react-router-dom";
@@ -12,6 +19,9 @@ import Frame from "../viewer/Frame";
 import { Like } from "../viewer/Submission";
 
 const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
+
+const BREAKPOINT = 992;
+
 const initialState = {
   tab: Tabs.JS,
   title: "untitled",
@@ -119,11 +129,32 @@ function useInitialState(id, dispatch, setTitle) {
   }, [id]);
 }
 
+export function useWindowSize() {
+  const [size, setSize] = useState([null, null]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      if (width < BREAKPOINT) {
+        setSize([width - 100, height - 200]);
+      } else {
+        setSize([null, null]);
+      }
+    }
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+  return size;
+}
+
 function Editor({ readOnly = false }) {
   const history = useHistory();
   const { id } = useParams();
   const [auth, _] = useContext(AuthContext);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [width, height] = useWindowSize();
 
   const iframe = useRef(null);
   const editor = useRef(null);
@@ -232,8 +263,8 @@ function Editor({ readOnly = false }) {
             value={state[state.tab].code}
             fontSize={14}
             showPrintMargin={true}
-            width="35vw"
-            height="60vh"
+            width={width ? width : "35vw"}
+            height={height ? height : "60vh"}
             showGutter={true}
             highlightActiveLine={true}
             readOnly={readOnly}
@@ -255,8 +286,8 @@ function Editor({ readOnly = false }) {
           ) : null}
         </div>
         <Frame
-          width="35vw"
-          height="60vh"
+          width={width ? width : "35vw"}
+          height={width ? width : "60vh"}
           src={id ? `${API_HOST}/submissions/${id}/render/` : null}
           ref={iframe}
         ></Frame>
@@ -269,7 +300,9 @@ function Editor({ readOnly = false }) {
 export default Editor;
 
 const Wrapper = styled.div`
-  width: 70vw;
+  @media (min-width: ${BREAKPOINT}px) {
+    width: 70vw;
+  }
 `;
 
 const StyledEditor = styled(AceEditor)`
@@ -280,14 +313,23 @@ const StyledEditor = styled(AceEditor)`
 
 const Flex = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   justify-content: center;
+
+  @media (min-width: ${BREAKPOINT}px) {
+    flex-direction: row;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+
+  @media (min-width: ${BREAKPOINT}px) {
+    justify-content: flex-start;
+  }
 `;
 
 const TabContainer = styled.div`
