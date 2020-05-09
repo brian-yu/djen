@@ -18,7 +18,7 @@ const About = () => {
       <br />
       <br />
       <p>
-        made with <i class="fas fa-heart"></i> by{" "}
+        made with <i className="fas fa-heart"></i> by{" "}
         <a href="https://brian.lol">brian</a>.
       </p>
     </Wrapper>
@@ -27,5 +27,5 @@ const About = () => {
 export default About;
 
 const Wrapper = styled.div`
-margin: 40px;
+  margin: 40px;
 `;
