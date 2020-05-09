@@ -56,7 +56,7 @@ function Submission(props) {
   return (
     <>
       <h4>
-        <TitleLink to={`/${auth && auth.github_id == submission.username ? 'create' : 'view'}/${submission.id}`}>{submission.title}</TitleLink>
+        <TitleLink to={`/view/${submission.id}`}>{submission.title}</TitleLink>
       </h4>
       <p>
         by{" "}

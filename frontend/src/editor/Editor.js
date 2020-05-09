@@ -10,6 +10,8 @@ import styled from "styled-components";
 import AceEditor from "react-ace";
 import { useParams, useHistory, Link } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-css";
 import "ace-builds/src-noconflict/theme-github";
 
 import AuthContext from "../auth/AuthContext";
@@ -18,7 +20,7 @@ import { sample } from "./sample";
 import Frame from "../viewer/Frame";
 import { Like } from "../viewer/Submission";
 
-const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
+const Tabs = Object.freeze({ JS: "javascript", HTML: "html", CSS: "css" });
 
 const BREAKPOINT = 992;
 
@@ -258,7 +260,7 @@ function Editor({ readOnly = false }) {
         <div>
           <StyledEditor
             ref={editor}
-            mode="javascript"
+            mode={state.tab}
             theme="github"
             name="blah2"
             onChange={(code) => dispatch({ type: "setCode", value: code })}
@@ -272,9 +274,6 @@ function Editor({ readOnly = false }) {
             readOnly={readOnly}
             setOptions={{
               useWorker: false,
-              enableBasicAutocompletion: true,
-              enableLiveAutocompletion: true,
-              enableSnippets: true,
               showLineNumbers: true,
               tabSize: 2,
             }}
