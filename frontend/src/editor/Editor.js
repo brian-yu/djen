@@ -136,7 +136,9 @@ export function useWindowSize() {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      if (width < BREAKPOINT) {
+      if (width < 576) {
+        setSize([width - 20, height - 200]);
+      } else if (width < BREAKPOINT) {
         setSize([width - 100, height - 200]);
       } else {
         setSize([null, null]);
@@ -365,6 +367,7 @@ const TitleContainer = styled.div`
 const TitleInput = styled.input`
   font-size: 1em;
   width: 300px;
+  max-width: 50vw;
   margin: 0 10px;
 `;
 

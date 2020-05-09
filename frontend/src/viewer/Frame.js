@@ -4,7 +4,6 @@ import styled from "styled-components";
 const Frame = forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
-    console.log(props.isVisible, props.src);
     if (props.isVisible === undefined) {
       setIsVisible(true);
       return;
