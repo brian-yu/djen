@@ -107,7 +107,7 @@ class Submission(models.Model):
                 { self.css }
                 </style>
             </head>
-            <body style="padding: 0; margin: 0;">
+            <body style="padding: 0; margin: 0; overflow: hidden;">
                 { self.html }
                 <script>{ self.js }</script>
             </body>
