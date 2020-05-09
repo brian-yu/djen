@@ -1,17 +1,18 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
-const Viewer = forwardRef((props, ref) => {
+const Frame = forwardRef((props, ref) => {
 
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
+    console.log(props.isVisible, props.src)
     if (props.isVisible === undefined) {
       setIsVisible(true);
       return;
     }
     setIsVisible(props.isVisible);
   }, [props.isVisible]);
-
+  
   return (
     <StyledIFrame
       sandbox="allow-scripts allow-same-origin allow-pointer-lock"
@@ -23,7 +24,7 @@ const Viewer = forwardRef((props, ref) => {
   );
 });
 
-export default Viewer;
+export default Frame;
 
 const StyledIFrame = styled.iframe`
   width: ${props => props.width};

@@ -16,7 +16,7 @@ function Create() {
 
   return (
     <Wrapper>
-      <h4>make some cool ass art</h4>
+      <h4>make something cool</h4>
       <Editor />
     </Wrapper>
   );

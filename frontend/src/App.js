@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+} from "react-router-dom";
+import styled from "styled-components";
 
 import "./App.css";
 import "./preface.min.css";
@@ -9,6 +16,8 @@ import Callback from "./auth/Callback";
 import Create from "./create/Create";
 import Profile from "./profile/Profile";
 import Gallery from "./gallery/Gallery";
+import About from "./About";
+import View from "./viewer/View";
 
 export const API_HOST =
   process.env.NODE_ENV !== "production"
@@ -24,11 +33,20 @@ function githubOauthLink() {
 
 function useLocalStorageAuth(setAuth) {
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('auth'));
+    const auth = JSON.parse(localStorage.getItem("auth"));
     if (auth) {
       setAuth(auth);
     }
   }, [setAuth]);
+}
+
+function NavLink({ children, to, activeOnlyWhenExact }) {
+  const match = useRouteMatch({ path: to, exact: activeOnlyWhenExact });
+  return (
+    <StyledNavLink to={to} match={match}>
+      {children}
+    </StyledNavLink>
+  );
 }
 
 function App() {
@@ -37,15 +55,13 @@ function App() {
 
   const SignInLink = () => {
     if (!auth) {
-      return (
-        <a href={githubOauthLink()}>sign in</a>
-      );
+      return <a href={githubOauthLink()}>sign in</a>;
     } else {
       return (
-        <Link to={`/profile/${auth.github_id}`}>{auth.github_id}</Link>
-      )
+        <NavLink to={`/profile/${auth.github_id}`}>{auth.github_id}</NavLink>
+      );
     }
-  }
+  };
 
   return (
     <div className="App">
@@ -55,13 +71,15 @@ function App() {
             <nav>
               <ul>
                 <li>
-                  <Link to="/">gallery</Link>
+                  <NavLink to="/" activeOnlyWhenExact>
+                    gallery
+                  </NavLink>
                 </li>
                 <li>
-                  <Link to="/create">create</Link>
+                  <NavLink to="/create">create</NavLink>
                 </li>
                 <li>
-                  <Link to="/about">about</Link>
+                  <NavLink to="/about">about</NavLink>
                 </li>
                 <li>
                   <SignInLink />
@@ -73,8 +91,11 @@ function App() {
               <Route path="/create/:id?">
                 <Create />
               </Route>
+              <Route path="/view/:id">
+                <View />
+              </Route>
               <Route path="/about">
-                <p>come back later.</p>
+                <About />
               </Route>
               <Route path="/auth/callback">
                 <Callback />
@@ -94,3 +115,7 @@ function App() {
 }
 
 export default App;
+
+const StyledNavLink = styled(Link)`
+  text-decoration: ${(props) => (props.match ? "none" : "underline")};
+`;

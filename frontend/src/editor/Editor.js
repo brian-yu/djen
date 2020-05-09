@@ -1,14 +1,15 @@
 import React, { useRef, useContext, useReducer, useEffect } from "react";
 import styled from "styled-components";
 import AceEditor from "react-ace";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-github";
 
 import AuthContext from "../auth/AuthContext";
 import { API_HOST } from "../App";
 import { sample } from "./sample";
-import Viewer from "../viewer/Viewer";
+import Frame from "../viewer/Frame";
+import { Like } from "../viewer/Submission";
 
 const Tabs = Object.freeze({ JS: 1, HTML: 2, CSS: 3 });
 const initialState = {
@@ -26,6 +27,9 @@ const initialState = {
     code: "",
     cursor: { row: 0, col: 0 },
   },
+  username: null,
+  upvote_count: null,
+  id: null,
 };
 
 function reducer(state, action) {
@@ -56,7 +60,7 @@ function reducer(state, action) {
         ...state,
         title: action.value,
       };
-    case "initCode":
+    case "load":
       return {
         ...state,
         ...action.value,
@@ -90,10 +94,13 @@ function useInitialState(id, dispatch, setTitle) {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        dispatch({ type: "setTitle", value: data.title });
         dispatch({
-          type: "initCode",
+          type: "load",
           value: {
+            title: data.title,
+            id: id,
+            username: data.username,
+            upvote_count: data.upvote_count,
             [Tabs.JS]: {
               ...initialState[Tabs.JS],
               code: data.js,
@@ -112,7 +119,7 @@ function useInitialState(id, dispatch, setTitle) {
   }, [id]);
 }
 
-function Editor() {
+function Editor({ readOnly = false }) {
   const history = useHistory();
   const { id } = useParams();
   const [auth, _] = useContext(AuthContext);
@@ -150,7 +157,6 @@ function Editor() {
         return resp.json();
       })
       .then((data) => {
-        console.log(data);
         if (method === "PUT") {
           iframe.current.src += "";
         } else {
@@ -182,13 +188,33 @@ function Editor() {
   return (
     <Wrapper>
       <TitleContainer>
-        <Title>title:</Title>
-        <TitleInput
-          value={state.title}
-          onChange={(e) =>
-            dispatch({ type: "setTitle", value: e.target.value })
-          }
-        ></TitleInput>
+        {readOnly ? (
+          <div>
+            <Title>{state.title}</Title>
+            <p>
+              by <Link to={`/profile/${state.username}`}>{state.username}</Link>
+            </p>
+            {auth && auth.github_id === state.username ? (
+              <>
+                <Link to={`/create/${id}`}>
+                  <i className="fas fa-pencil-alt"></i>
+                </Link>
+                &nbsp;
+                <Link to={`/create/${id}`}>edit</Link>
+              </>
+            ) : null}
+          </div>
+        ) : (
+          <>
+            <Title>title:</Title>
+            <TitleInput
+              value={state.title}
+              onChange={(e) =>
+                dispatch({ type: "setTitle", value: e.target.value })
+              }
+            ></TitleInput>
+          </>
+        )}
       </TitleContainer>
       <TabContainer>
         <Tab value={Tabs.JS}>js</Tab>
@@ -210,6 +236,7 @@ function Editor() {
             height="60vh"
             showGutter={true}
             highlightActiveLine={true}
+            readOnly={readOnly}
             setOptions={{
               useWorker: false,
               enableBasicAutocompletion: true,
@@ -219,19 +246,22 @@ function Editor() {
               tabSize: 2,
             }}
           />
-          <ButtonContainer>
-            <button className="success" onClick={runScript}>
-              Run / Save
-            </button>
-          </ButtonContainer>
+          {!readOnly ? (
+            <ButtonContainer>
+              <button className="success" onClick={runScript}>
+                Run / Save
+              </button>
+            </ButtonContainer>
+          ) : null}
         </div>
-        <Viewer
+        <Frame
           width="35vw"
           height="60vh"
           src={id ? `${API_HOST}/submissions/${id}/render/` : null}
           ref={iframe}
-        ></Viewer>
+        ></Frame>
       </Flex>
+      <Like submission={state}></Like>
     </Wrapper>
   );
 }
@@ -286,13 +316,14 @@ const StyledTab = styled.div`
 const TitleContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: center;
+  margin: 20px 0;
 `;
 
 const TitleInput = styled.input`
   font-size: 1em;
-  width: auto;
-  margin: 0;
+  width: 300px;
+  margin: 0 10px;
 `;
 
 const Title = styled.h4`
