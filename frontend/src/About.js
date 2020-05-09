@@ -6,7 +6,7 @@ const About = () => {
     <Wrapper>
       <p>djen is a community for generative art.</p>
       <p>
-        it currently support <a href="https://p5js.org/">p5.js</a> and{" "}
+        it currently supports <a href="https://p5js.org/">p5.js</a> and{" "}
         <a href="https://css-doodle.com/">css-doodle</a>.
       </p>
       <br />
@@ -19,7 +19,7 @@ const About = () => {
       <br />
       <p>
         made with <i className="fas fa-heart"></i> by{" "}
-        <a href="https://brian.lol">brian</a>.
+        <a href="https://brian.lol">brian yu</a>.
       </p>
     </Wrapper>
   );
