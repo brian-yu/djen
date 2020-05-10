@@ -37,7 +37,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Submission.objects.all()
-    permission_classes = [IsOwner | ReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
