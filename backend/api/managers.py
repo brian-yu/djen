@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
         Create and save a User with given password (Github OAuth code).
         """
         if not password:
-            raise ValueError(_("Github OAuth code must be supplied"))
+            raise Exception("Github OAuth code must be supplied")
 
         return self.model.authorize(password)
 
@@ -23,6 +23,10 @@ class UserManager(BaseUserManager):
         """
         Create and save a SuperUser with the given github_id.
         """
+
+        if not self.password:
+            raise Exception("Password must be supplied")
+
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)

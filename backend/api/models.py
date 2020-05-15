@@ -89,8 +89,11 @@ class Submission(models.Model):
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
 
-    def upvote_count(self):
-        return self.upvote_set.count()
+    # def upvote_count(self):
+    #     return self.upvote_set.count()
+    
+    def hotness(self):
+        return self.upvote_count()
 
     def username(self):
         return self.user.github_id

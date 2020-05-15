@@ -5,7 +5,20 @@ import AuthContext from "../auth/AuthContext";
 import { API_HOST } from "../App";
 import List from "../viewer/List";
 
-const Orders = Object.freeze({HOT: 'hot', NEW: 'new', TOP: 'top'});
+const Orders = Object.freeze({
+  HOT: {
+    name: "hot",
+    key: "hot",
+  },
+  NEW: {
+    name: "new",
+    key: "new",
+  },
+  TOP: {
+    name: "top",
+    key: "top",
+  },
+});
 
 function Gallery(props) {
   const [auth, setAuth] = useContext(AuthContext);
@@ -13,19 +26,18 @@ function Gallery(props) {
   const [order, setOrder] = useState(Orders.HOT);
 
   useEffect(() => {
-    if (list) {
-      return;
-    }
-    fetch(`${API_HOST}/submissions?order=${order}`, {
+    const headers = auth ? { Authorization: `Token ${auth.token}` } : {};
+    fetch(`${API_HOST}/submissions?ordering=${order.key}`, {
       method: "GET",
+      headers: headers,
     })
       .then((resp) => {
         return resp.json();
       })
       .then((resp) => {
-        setList(resp);
+        setList(resp.results);
       });
-  }, [list, order]);
+  }, [order, auth]);
 
   if (!list) {
     return <p>Loading...</p>;
@@ -37,17 +49,20 @@ function Gallery(props) {
       <Nav>
         <NavItem
           selected={order === Orders.HOT}
-          onClick={() => setOrder(Orders.HOT)}>
+          onClick={() => setOrder(Orders.HOT)}
+        >
           <div>hot</div>
         </NavItem>
         <NavItem
           selected={order === Orders.NEW}
-          onClick={() => setOrder(Orders.NEW)}>
+          onClick={() => setOrder(Orders.NEW)}
+        >
           <div>new</div>
         </NavItem>
         <NavItem
           selected={order === Orders.TOP}
-          onClick={() => setOrder(Orders.TOP)}>
+          onClick={() => setOrder(Orders.TOP)}
+        >
           <div>top</div>
         </NavItem>
       </Nav>
@@ -67,5 +82,5 @@ const Nav = styled.ul`
 const NavItem = styled.li`
   cursor: pointer;
   margin: 0px 10px;
-  text-decoration: ${props => props.selected ? 'none' : 'underline'};
+  text-decoration: ${(props) => (props.selected ? "none" : "underline")};
 `;
