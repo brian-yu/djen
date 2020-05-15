@@ -39,4 +39,4 @@ class IsUserOrReadOnly(BasePermission):
             return True
 
         # Write permissions are only allowed to the user.
-        return obj == request.user
+        return obj.user == request.user

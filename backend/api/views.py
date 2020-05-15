@@ -27,7 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsUser | ReadOnly]
+    permission_classes = [IsUserOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
 
@@ -37,7 +37,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Submission.objects.all()
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsUserOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
@@ -85,7 +85,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsUserOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
 
@@ -96,7 +96,7 @@ class UpvoteViewSet(viewsets.ModelViewSet):
 
     queryset = Upvote.objects.all()
     serializer_class = UpvoteSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsUserOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
 
