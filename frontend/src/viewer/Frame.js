@@ -2,7 +2,7 @@ import React, { forwardRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Frame = forwardRef((props, ref) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   useEffect(() => {
     if (props.isVisible === undefined) {
       setIsVisible(true);

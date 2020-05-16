@@ -2,6 +2,7 @@ import json
 
 from django.db.models import (
     Count,
+    F,
     ExpressionWrapper,
     BooleanField,
     FloatField,
