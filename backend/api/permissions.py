@@ -15,6 +15,7 @@ class IsUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj == request.user
 
+
 class IsUserOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,

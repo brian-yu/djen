@@ -11,6 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
 class SubmissionListSerializer(serializers.HyperlinkedModelSerializer):
     upvote_count = serializers.IntegerField(read_only=True)
     upvoted = serializers.BooleanField(read_only=True)
+    hotness = serializers.FloatField(read_only=True)
+
     class Meta:
         model = Submission
         fields = [
@@ -26,6 +28,7 @@ class SubmissionListSerializer(serializers.HyperlinkedModelSerializer):
             "created_at",
             "upvote_count",
             "upvoted",
+            "hotness",
         ]
 
 

@@ -3,14 +3,16 @@ import json
 from django.db.models import (
     Count,
     ExpressionWrapper,
-    Q,
-    F,
     BooleanField,
+    FloatField,
     Value,
+    Func,
     Exists,
     OuterRef,
 )
+from django.db.models.functions import Power
 from django.http import JsonResponse
+from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, viewsets, status
@@ -86,8 +88,21 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
         ordering = self.request.query_params.get("ordering", None)
         if ordering == "hot":
-            # TODO: implement hotness.
-            queryset = queryset.order_by("-upvote_count")
+            # Hotness algorithm: https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
+            gravity = 1.8
+
+            class Age(Func):
+                template = "(EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH  FROM %(expressions)s))/3600"
+
+            queryset = queryset.annotate(
+                hotness=ExpressionWrapper(
+                    F("upvote_count")
+                    / Power(Age("created_at", output_field=FloatField()), gravity),
+                    output_field=FloatField(),
+                )
+            )
+            queryset = queryset.order_by("-hotness")
+
         elif ordering == "top":
             queryset = queryset.order_by("-upvote_count")
         elif ordering == "new":
@@ -110,25 +125,28 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def render(self, request, pk=None):
         submission = self.get_object()
         return Response(submission.render())
-    
+
     @action(detail=True, methods=["get"])
     def upvote(self, request, pk=None):
         submission = self.get_object()
         print(self.request.user)
         if self.request.user.is_authenticated:
-            upvote = Upvote.objects.create(submission=submission, user=self.request.user)
-            return Response({'status': 'upvoted'})
+            upvote = Upvote.objects.create(
+                submission=submission, user=self.request.user
+            )
+            return Response({"status": "upvoted"})
         return Response({}, status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=True, methods=["get"])
     def unvote(self, request, pk=None):
         submission = self.get_object()
         if self.request.user.is_authenticated:
-            Upvote.objects.filter(submission=submission, user=self.request.user).delete()
-            return Response({'status': 'unvoted'})
+            Upvote.objects.filter(
+                submission=submission, user=self.request.user
+            ).delete()
+            return Response({"status": "unvoted"})
 
         return Response({}, status.HTTP_401_UNAUTHORIZED)
-        
 
     @action(detail=False)
     def recent_users(self, request):

@@ -91,7 +91,7 @@ class Submission(models.Model):
 
     # def upvote_count(self):
     #     return self.upvote_set.count()
-    
+
     def hotness(self):
         return self.upvote_count()
 
