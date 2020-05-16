@@ -1,4 +1,0 @@
-service: graphql
-runtime: nodejs12
-
-entrypoint: node src/index.js
