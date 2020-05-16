@@ -60,7 +60,15 @@ function Gallery({ title, filter }) {
   }, [order, auth]);
 
   if (!list) {
-    return <p>Loading...</p>;
+    return (
+      <>
+        <p>loading...</p>
+        <div className="spinner">
+          <div className="cube1"></div>
+          <div className="cube2"></div>
+        </div>
+      </>
+    );
   }
 
   return (

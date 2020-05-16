@@ -26,9 +26,9 @@ function useAuth(code) {
     })
       .then((resp) => {
         if (!resp.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
-        return resp.json()
+        return resp.json();
       })
       .then((auth) => {
         setAuth(auth);
@@ -44,7 +44,6 @@ function Callback() {
   return (
     <>
       <h3>authenticating...</h3>
-      <p>{code}</p>
       <div className="spinner">
         <div className="cube1"></div>
         <div className="cube2"></div>
