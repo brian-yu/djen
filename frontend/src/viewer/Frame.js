@@ -4,7 +4,8 @@ import styled from "styled-components";
 const Frame = forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(props.idx === 0);
   useEffect(() => {
-    if (props.idx === 0) {
+    // Render by default if no index or first in list.
+    if (props.idx === 0 || props.idx === undefined) {
       setIsVisible(true);
       return;
     }
