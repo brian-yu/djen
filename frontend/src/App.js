@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   useRouteMatch,
+  Redirect,
 } from "react-router-dom";
 import styled from "styled-components";
 
@@ -58,7 +59,7 @@ function App() {
       return <a href={githubOauthLink()}>sign in</a>;
     } else {
       return (
-        <NavLink to={`/profile/${auth.github_id}`}>{auth.github_id}</NavLink>
+        <NavLink to={`/profile/${auth.github_id}/`}>{auth.github_id}</NavLink>
       );
     }
   };
@@ -100,10 +101,10 @@ function App() {
               <Route path="/auth/callback">
                 <Callback />
               </Route>
-              <Route path="/profile/:user">
+              <Route path="/profile/:user/:order?">
                 <Profile />
               </Route>
-              <Route path="/">
+              <Route path="/:order?">
                 <Gallery />
               </Route>
             </Switch>

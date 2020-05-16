@@ -77,7 +77,7 @@ function Submission({ submission, idx }) {
       </h4>
       <p>
         by{" "}
-        <TitleLink to={`/profile/${submission.username}`}>
+        <TitleLink to={`/profile/${submission.username}/`}>
           {submission.username}
         </TitleLink>
       </p>
