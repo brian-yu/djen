@@ -40,7 +40,7 @@ function Profile() {
           Log out.
         </button>
       ) : null}
-      <Gallery filter={{key: 'user', value: user}} />
+      <Gallery filter={{key: 'username', value: user}} />
     </>
   );
 }
