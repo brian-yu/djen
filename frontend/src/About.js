@@ -22,7 +22,7 @@ const About = () => {
         <a href="https://brian.lol">brian yu</a>.
       </p>
       <p>
-      <i class="fab fa-github"></i>&nbsp;<a href="https://github.com/brian-yu/djen">github</a>.
+      <i className="fab fa-github"></i>&nbsp;<a href="https://github.com/brian-yu/djen">github</a>.
       </p>
     </Wrapper>
   );
