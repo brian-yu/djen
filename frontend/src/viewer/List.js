@@ -8,10 +8,10 @@ function List(props) {
   const [auth, setAuth] = useContext(AuthContext);
   const list = props.list;
 
-  return list.map((submission) => {
+  return list.map((submission, idx) => {
     return (
       <Item key={submission.id}>
-        <Submission submission={submission}/>
+        <Submission submission={submission} idx={idx} />
       </Item>
     );
   });

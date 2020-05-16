@@ -67,9 +67,7 @@ export function useWindowSize() {
   return size;
 }
 
-function Submission(props) {
-  const submission = props.submission;
-
+function Submission({ submission, idx }) {
   const size = useWindowSize();
 
   return (
@@ -85,6 +83,8 @@ function Submission(props) {
       </p>
       <TrackVisibility partialVisibility>
         <Frame
+          title={submission.title}
+          idx={idx}
           width={`${size}px`}
           height={`${size}px`}
           src={`${API_HOST}/submissions/${submission.id}/render/`}

@@ -2,14 +2,14 @@ import React, { forwardRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Frame = forwardRef((props, ref) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(props.idx === 0);
   useEffect(() => {
-    if (props.isVisible === undefined) {
+    if (props.idx === 0) {
       setIsVisible(true);
       return;
     }
     setIsVisible(props.isVisible);
-  }, [props.isVisible]);
+  }, [props.isVisible, props.idx]);
 
   return (
     <StyledIFrame
